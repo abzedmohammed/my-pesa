@@ -11,6 +11,12 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
+import os
+from dotenv import load_dotenv
+
+
+load_dotenv()
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,13 +26,34 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-n#_90xyodp-0q(re)hciw=4!&$24mabz@cz$jj1+lf9xoj!_&)'
+SECRET_KEY = os.getenv('SECRET_KEY')
+MODE=os.getenv("MODE", default="dev")
+DEBUG = os.getenv('DEBUG')
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+APP_DOMAIN = os.getenv("APP_DOMAIN", default="http://localhost:8000")
 
-ALLOWED_HOSTS = []
+FILE_UPLOAD_STORAGE = os.getenv("FILE_UPLOAD_STORAGE", default="local")
 
+ALLOWED_HOSTS = ['*']
+
+if FILE_UPLOAD_STORAGE == "local":
+    MEDIA_ROOT_NAME = "media"
+    MEDIA_ROOT = os.path.join(BASE_DIR, MEDIA_ROOT_NAME)
+    MEDIA_URL = f"/{MEDIA_ROOT_NAME}/"
+
+if FILE_UPLOAD_STORAGE == "s3":
+    # Using django-storages
+    # https://django-storages.readthedocs.io/en/latest/backends/amazon-S3.html
+    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+    AWS_S3_ACCESS_KEY_ID = os.getenv("AWS_S3_ACCESS_KEY_ID")
+    AWS_S3_SECRET_ACCESS_KEY = os.getenv("AWS_S3_SECRET_ACCESS_KEY")
+    AWS_STORAGE_BUCKET_NAME = os.getenv("AWS_STORAGE_BUCKET_NAME")
+    AWS_S3_REGION_NAME = os.getenv("AWS_S3_REGION_NAME")
+    AWS_S3_SIGNATURE_VERSION = 's3v4'
+    AWS_S3_FILE_OVERWRITE = False
+    AWS_DEFAULT_ACL = None
+    AWS_S3_VERIFY = True
 
 # Application definition
 
@@ -37,6 +64,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'pesa_app',
+    'rest_framework',
+
 ]
 
 MIDDLEWARE = [
@@ -73,12 +103,31 @@ WSGI_APPLICATION = 'my_pesa.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
+if os.getenv('MODE')=="dev":    
+    DATABASES = {
+        'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': '',
+        }
     }
+else:
+    DATABASES = {
+    'default': dj_database_url.config(
+    default=config('DATABASE_URL')
+    )
 }
+
 
 
 # Password validation
@@ -105,7 +154,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Africa/Nairobi'
 
 USE_I18N = True
 

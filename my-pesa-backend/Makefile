@@ -11,7 +11,13 @@ freeze:
 	pip freeze > requirements.txt
 
 drop:
-	dropdb my-pesa
+	dropdb my_pesa
 
 create:
-	createdb my-pesa
+	createdb my_pesa
+
+admin:
+	python manage.py createsuperuser --username admin --email admin@admin.com
+
+env:
+	source virtual/Scripts/activate
