@@ -6,6 +6,7 @@ import { useSelector, useDispatch } from "react-redux"
 import { Routes, Route, Navigate } from "react-router-dom"
 import Login from "./components/auth/Login";
 import Dashboard from "./components/home/Dashboard";
+import Register from "./components/auth/Register";
 
 let title = "Home"
 
@@ -22,6 +23,7 @@ function App() {
     <Routes>
       <Route path='*' element={<Navigate to="/login" />}/>
       <Route exact path="/login" element={<Login />} />
+      <Route exact path="/register" element={<Register />} />
     </Routes>
   )
 

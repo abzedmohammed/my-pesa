@@ -2,17 +2,36 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
-* {
+/* * {
     background: #000;
     color: #FFFFFF;
-}
+} */
+
+
 
 :root {
   background: #000;
-  color: #FFFFFF;
+  --white-a: #FFFFFF;
+  --white-b: #EDEADE;
+  --white-c: #FFF8DC;
+  --black-a: #000;
+  --black-b: #28282B;
+  --black-c: #1B1212;
 }
 
 body {
   background: #000;
   color: #FFFFFF;
+}
+
+h2{
+  color: var(--white-c);
+}
+
+input::placeholder{
+  color: var(--white-c);
+}
+
+.login-container{
+  background: var(--black-b);
 }
