@@ -36,6 +36,8 @@ FILE_UPLOAD_STORAGE = os.getenv("FILE_UPLOAD_STORAGE", default="local")
 
 ALLOWED_HOSTS = ['*']
 
+RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')if RENDER_EXTERNAL_HOSTNAME:    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
+
 if FILE_UPLOAD_STORAGE == "local":
     MEDIA_ROOT_NAME = "media"
     MEDIA_ROOT = os.path.join(BASE_DIR, MEDIA_ROOT_NAME)
@@ -98,6 +100,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:3001",
     "http://localhost:8080",
     "http://localhost:8000",
+    "https://my-pesa.vercel.app",
 ]
 
 CORS_ALLOW_HEADERS = ['*']
@@ -144,9 +147,14 @@ if os.getenv('MODE')=="dev":
     }
 else:
     DATABASES = {
-    'default': dj_database_url.config(
-    default=config('DATABASE_URL')
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': os.getenv('AWS_DB_HOST'),
+        'PORT': '',
+        }
 }
 
 

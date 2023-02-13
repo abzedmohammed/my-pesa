@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404
+from django.http import HttpResponse
 from rest_framework.response import Response
 from rest_framework import viewsets, parsers
 from rest_framework.views import APIView
@@ -8,6 +9,9 @@ from django.contrib.auth.models import User
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework import status
+
+def index(request):
+    return HttpResponse("Welcome to My-Pesa API")
 
 class ImageViewset(viewsets.ModelViewSet):
     queryset = Image.objects.all()
