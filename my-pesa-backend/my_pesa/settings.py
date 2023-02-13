@@ -66,10 +66,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'pesa_app',
     'rest_framework',
+    'rest_framework.authtoken',
+    'corsheaders',
 
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -80,6 +83,24 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'my_pesa.urls'
+
+CORS_ALLOW_METHODS = [
+    "DELETE",
+    "GET",
+    "OPTIONS",
+    "PATCH",
+    "POST",
+    "PUT",
+]
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://localhost:3001",
+    "http://localhost:8080",
+    "http://localhost:8000",
+]
+
+CORS_ALLOW_HEADERS = ['*']
 
 TEMPLATES = [
     {

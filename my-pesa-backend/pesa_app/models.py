@@ -6,7 +6,7 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save
 from random import randint
 import uuid
-
+from rest_framework.authtoken.models import Token
 
 def file_generate_name(original_file_name):
     extension = pathlib.Path(original_file_name).suffix
@@ -32,7 +32,7 @@ class Image(models.Model):
     file = models.FileField(
         upload_to=file_generate_upload_path,
         blank=True,
-        null=True, default="https://res.cloudinary.com/abzedmohammed/image/upload/v1670316789/defaults/default_black_mv0upm.png"
+        null=True
     )
     file_name = models.CharField(max_length=255, unique=True)
 
@@ -47,10 +47,6 @@ class Currency(models.Model):
     def __str__(self):
         return self.country
 
-    # def convert(self):
-    #     default_country = "KES"
-    #     rate = 120
-
 
 class Bank(models.Model):
     name = models.CharField(max_length=255, blank=True, null=True)
@@ -61,35 +57,31 @@ class Bank(models.Model):
         return self.name
 
 
-class Customer(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, blank=False, null=False, related_name='customer')
-    avatar = models.OneToOneField(Image, on_delete=models.CASCADE, blank=True, null=True)
+class BankCard(models.Model):
+    card = models.BigIntegerField(unique=True, editable=False, default=generate_credit_card)
+    bank = models.ForeignKey(Bank, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
-        return self.user.username
-
-
-class BankCard(models.Model):
-    card = models.BigIntegerField(primary_key=True, unique=True, editable=False, default=generate_credit_card)
-    # card_type = models.Cho(max_length=255, null=True, blank=True, choices=CARD_CHOICES)
-    bank = models.ForeignKey(Bank, on_delete=models.CASCADE, null=True, blank=True)
+        return f"{self.id}"
 
 
 class SingleAccount(models.Model):
-    balance = models.IntegerField(null=True, blank=True, default=5000)
-    bank_account = models.OneToOneField(BankCard, on_delete=models.CASCADE)
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    balance = models.IntegerField(null=True, blank=True, default=500)
+    bank_number = models.OneToOneField(BankCard, on_delete=models.CASCADE)
+    customer = models.ForeignKey(User, on_delete=models.CASCADE)
     
 
     def __str__(self):
-        return f"{self.bank_account.bank.name} - KES {self.balance}"
+        return f"{self.bank_number.bank.name} - KES {self.balance}"
 
 
-@receiver(post_save, sender=User)
-def create_customer_account(sender, instance, created, **kwargs):
-    if created:
-        Customer.objects.create(user=instance)
-    instance.customer.save()
+# @receiver(post_save, sender=User)
+# def create_customer_account(sender, instance, created, **kwargs):
+#     if created:
+#         Customer.objects.create(user=instance)
+#         Token.objects.create(user=instance)
+
+#     instance.customer.save()
 
 # @receiver(post_save, sender=Bank)
 # def create_account_number(sender, created, **kwargs):

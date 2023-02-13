@@ -32,32 +32,29 @@ class CurrencySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class BankSerializer(serializers.ModelSerializer):
- 
+    
+    logo = ImageSerializer()
+    
     class Meta:
         model = Bank
         fields = '__all__'
 
-class CustomerSerializer(serializers.ModelSerializer):
-
-    user = UserSerializer()
- 
-    class Meta:
-        model = Customer
-        fields = '__all__'
 
 class BankCardSerializer(serializers.ModelSerializer):
 
-    bank = BankSerializer()
+    bank = BankSerializer(read_only=True)
+    bank_id = serializers.PrimaryKeyRelatedField(queryset=Bank.objects.all(), source='bank')
  
     class Meta:
         model = BankCard
-        fields = '__all__'
+        fields = ('id', 'card', 'bank', 'bank_id')
+
 
 class SingleAccountSerializer(serializers.ModelSerializer):
 
-    bank_account = BankCardSerializer()
-    customer = CustomerSerializer()
+    bank_number = BankCardSerializer(read_only=True)
+    bank_number_id = serializers.PrimaryKeyRelatedField(queryset=BankCard.objects.all(), source='bank_number')
  
     class Meta:
         model = SingleAccount
-        fields = '__all__'
+        fields = ('id', 'balance', 'bank_number', 'customer', 'bank_number_id')

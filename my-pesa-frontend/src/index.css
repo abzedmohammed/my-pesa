@@ -24,6 +24,10 @@ body {
   color: #FFFFFF;
 }
 
+h1{
+  color: var(--white-b);
+}
+
 h2{
   color: var(--white-c);
 }
