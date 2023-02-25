@@ -57,7 +57,14 @@ export default function Register(){
                             </div>
 
                             <div className="my-5">
-                                <button className="btn bg-cyan-600 w-80"type="submit">Create Account</button>
+                                <button className="btn bg-cyan-600 w-80"type="submit">
+                                {
+                                        user.loading ?
+                                        <span class="loader"></span>
+                                        :
+                                        "Create Account"
+                                    }
+                                </button>
                             </div>
 
                             <div className="my-5">

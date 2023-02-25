@@ -46,7 +46,14 @@ export default function Login(){
                             </div>
 
                             <div className="my-12">
-                                <button className="btn bg-cyan-600 w-80" type="submit">Login</button>
+                                <button className="btn bg-cyan-600 w-80" type="submit">
+                                    {
+                                        user.loading ?
+                                        <span class="loader"></span>
+                                        :
+                                        "Login"
+                                    }
+                                </button>
                             </div>
 
                             <div className="my-7">

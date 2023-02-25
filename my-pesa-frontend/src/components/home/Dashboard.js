@@ -60,6 +60,7 @@ export default function Dashboard(){
                 <h2 className="text-3xl font-bold underline mt-8 mb-5">Available Banks</h2>
                     <div className="grid grid-cols-3 gap-8">
                         {
+                            bank.banks.length ?
                             bank.banks.map(bnk => {
                                 return (
                                     <Link key={bnk.id} to={"/banks/" + bnk.id}>
@@ -72,6 +73,11 @@ export default function Dashboard(){
                                     </Link>
                                 )
                             })
+                            :
+                            <div className="flex flex-col">
+                                <p>Loading Data</p>
+                                <span class="loader"></span>
+                            </div>
                         }
                     </div>
                 </div>
